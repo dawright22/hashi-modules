@@ -1,1 +1,1 @@
-# hashi-modules
+# hashistack-modules
