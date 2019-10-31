@@ -10,7 +10,7 @@ module "consul_auto_join_instance_role" {
 }
 
 data "aws_ami" "hashistack" {
-  count       = "${var.create && var.image_id == "" ? 1 : 0}"
+  instance_count = "${var.create && var.image_id == "" ? 1 : 0}"
   most_recent = true
   owners      = ["${var.ami_owner}"]
   name_regex  = "hashistack-image_${lower(var.release_version)}_nomad_${lower(var.nomad_version)}_vault_${lower(var.vault_version)}_consul_${lower(var.consul_version)}_${lower(var.os)}_${var.os_version}.*"
@@ -27,7 +27,7 @@ data "aws_ami" "hashistack" {
 }
 
 data "template_file" "hashistack_init" {
-  count    = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
   template = "${file("${path.module}/templates/init-systemd.sh.tpl")}"
 
   vars = {
@@ -64,7 +64,7 @@ module "nomad_server_sg" {
 }
 
 resource "aws_security_group_rule" "ssh" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   security_group_id = "${module.vault_server_sg.vault_server_sg_id}"
   type              = "ingress"
@@ -75,7 +75,7 @@ resource "aws_security_group_rule" "ssh" {
 }
 
 resource "aws_launch_configuration" "hashistack" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   name_prefix                 = "${format("%s-hashistack-", var.name)}"
   associate_public_ip_address = "${var.public}"
@@ -161,14 +161,14 @@ module "nomad_lb_aws" {
 }
 
 resource "aws_autoscaling_group" "hashistack" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   name_prefix          = "${aws_launch_configuration.hashistack.name}"
   launch_configuration = "${aws_launch_configuration.hashistack.id}"
   vpc_zone_identifier  = ["${var.subnet_ids}"]
-  max_size             = "${var.count != -1 ? var.count : length(var.subnet_ids)}"
-  min_size             = "${var.count != -1 ? var.count : length(var.subnet_ids)}"
-  desired_capacity     = "${var.count != -1 ? var.count : length(var.subnet_ids)}"
+  max_size             = "${var.instance_count != -1 ? var.instance_count : length(var.subnet_ids)}"
+  min_size             = "${var.instance_count != -1 ? var.instance_count : length(var.subnet_ids)}"
+  desired_capacity     = "${var.instance_count != -1 ? var.instance_count : length(var.subnet_ids)}"
   default_cooldown     = 30
   force_delete         = true
 
