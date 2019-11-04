@@ -21,8 +21,7 @@ Use the HTTP API to retrieve the Consul members, write a key/value,
 and read that key/value.
 
 ${!var.use_lb_cert ?
-"If you're making HTTP API requests to Consul from the Bastion host, \n
-the below env var has been set for you."
+"If you're making HTTP API requests to Consul from the Bastion host, the below env var has been set for you."
 
   $ export CONSUL_ADDR=http://127.0.0.1:8500
 
