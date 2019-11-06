@@ -17,14 +17,14 @@ data "aws_iam_policy_document" "assume_role" {
 }
 
 resource "aws_iam_role" "consul" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   name_prefix        = "${var.name}-"
   assume_role_policy = "${data.aws_iam_policy_document.assume_role.json}"
 }
 
 data "aws_iam_policy_document" "consul" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   statement {
     sid       = "AllowSelfAssembly"
@@ -45,7 +45,7 @@ data "aws_iam_policy_document" "consul" {
 }
 
 resource "aws_iam_role_policy" "consul" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   name_prefix = "${var.name}-"
   role        = "${aws_iam_role.consul.id}"
@@ -53,7 +53,7 @@ resource "aws_iam_role_policy" "consul" {
 }
 
 resource "aws_iam_instance_profile" "consul" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   name_prefix = "${var.name}-"
   role        = "${aws_iam_role.consul.name}"
