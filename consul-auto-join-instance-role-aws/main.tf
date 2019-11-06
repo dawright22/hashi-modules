@@ -3,7 +3,7 @@ terraform {
 }
 
 data "aws_iam_policy_document" "assume_role" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   statement {
     effect  = "Allow"
