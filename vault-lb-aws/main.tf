@@ -3,7 +3,7 @@ terraform {
 }
 
 resource "aws_security_group" "vault_lb" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   name_prefix = "${var.name}-vault-lb-"
   description = "Security group for Vault ${var.name} LB"
@@ -12,7 +12,7 @@ resource "aws_security_group" "vault_lb" {
 }
 
 resource "aws_security_group_rule" "vault_lb_http_80" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   security_group_id = "${aws_security_group.vault_lb.id}"
   type              = "ingress"
@@ -23,7 +23,7 @@ resource "aws_security_group_rule" "vault_lb_http_80" {
 }
 
 resource "aws_security_group_rule" "vault_lb_https_443" {
-  count = "${var.create && var.use_lb_cert ? 1 : 0}"
+  instance_count = "${var.create && var.use_lb_cert ? 1 : 0}"
 
   security_group_id = "${aws_security_group.vault_lb.id}"
   type              = "ingress"
@@ -34,7 +34,7 @@ resource "aws_security_group_rule" "vault_lb_https_443" {
 }
 
 resource "aws_security_group_rule" "vault_lb_tcp_8200" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   security_group_id = "${aws_security_group.vault_lb.id}"
   type              = "ingress"
@@ -45,7 +45,7 @@ resource "aws_security_group_rule" "vault_lb_tcp_8200" {
 }
 
 resource "aws_security_group_rule" "outbound_tcp" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   security_group_id = "${aws_security_group.vault_lb.id}"
   type              = "egress"
@@ -56,18 +56,18 @@ resource "aws_security_group_rule" "outbound_tcp" {
 }
 
 resource "random_id" "vault_lb_access_logs" {
-  count = "${var.create && !var.lb_bucket_override ? 1 : 0}"
+  instance_count = "${var.create && !var.lb_bucket_override ? 1 : 0}"
 
   byte_length = 4
   prefix      = "${format("%s-vault-lb-access-logs-", var.name)}"
 }
 
 data "aws_elb_service_account" "vault_lb_access_logs" {
-  count = "${var.create && !var.lb_bucket_override ? 1 : 0}"
+  instance_count = "${var.create && !var.lb_bucket_override ? 1 : 0}"
 }
 
 resource "aws_s3_bucket" "vault_lb_access_logs" {
-  count = "${var.create && !var.lb_bucket_override ? 1 : 0}"
+  instance_count = "${var.create && !var.lb_bucket_override ? 1 : 0}"
 
   bucket = "${random_id.vault_lb_access_logs.hex}"
   acl    = "private"
@@ -99,14 +99,14 @@ POLICY
 }
 
 resource "random_id" "vault_lb" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   byte_length = 4
   prefix      = "vault-lb-"
 }
 
 resource "aws_lb" "vault" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   name            = "${random_id.vault_lb.hex}"
   internal        = "${var.is_internal_lb ? true : false}"
@@ -122,14 +122,14 @@ resource "aws_lb" "vault" {
 }
 
 resource "random_id" "vault_http_8200" {
-  count = "${var.create && !var.use_lb_cert ? 1 : 0}"
+  instance_count = "${var.create && !var.use_lb_cert ? 1 : 0}"
 
   byte_length = 4
   prefix      = "vault-http-8200-"
 }
 
 resource "aws_lb_target_group" "vault_http_8200" {
-  count = "${var.create && !var.use_lb_cert ? 1 : 0}"
+  instance_count = "${var.create && !var.use_lb_cert ? 1 : 0}"
 
   name     = "${random_id.vault_http_8200.hex}"
   vpc_id   = "${var.vpc_id}"
@@ -151,7 +151,7 @@ resource "aws_lb_target_group" "vault_http_8200" {
 }
 
 resource "aws_lb_listener" "vault_80" {
-  count = "${var.create && !var.use_lb_cert ? 1 : 0}"
+  instance_count = "${var.create && !var.use_lb_cert ? 1 : 0}"
 
   load_balancer_arn = "${aws_lb.vault.arn}"
   port              = "80"
@@ -164,7 +164,7 @@ resource "aws_lb_listener" "vault_80" {
 }
 
 resource "aws_iam_server_certificate" "vault" {
-  count = "${var.create && var.use_lb_cert ? 1 : 0}"
+  instance_count = "${var.create && var.use_lb_cert ? 1 : 0}"
 
   name              = "${random_id.vault_lb.hex}"
   certificate_body  = "${var.lb_cert}"
@@ -174,14 +174,14 @@ resource "aws_iam_server_certificate" "vault" {
 }
 
 resource "random_id" "vault_https_8200" {
-  count = "${var.create && var.use_lb_cert ? 1 : 0}"
+  instance_count = "${var.create && var.use_lb_cert ? 1 : 0}"
 
   byte_length = 4
   prefix      = "vault-https-8200-"
 }
 
 resource "aws_lb_target_group" "vault_https_8200" {
-  count = "${var.create && var.use_lb_cert ? 1 : 0}"
+  instance_count = "${var.create && var.use_lb_cert ? 1 : 0}"
 
   name     = "${random_id.vault_https_8200.hex}"
   vpc_id   = "${var.vpc_id}"
@@ -203,7 +203,7 @@ resource "aws_lb_target_group" "vault_https_8200" {
 }
 
 resource "aws_lb_listener" "vault_443" {
-  count = "${var.create && var.use_lb_cert ? 1 : 0}"
+  instance_count = "${var.create && var.use_lb_cert ? 1 : 0}"
 
   load_balancer_arn = "${aws_lb.vault.arn}"
   port              = "443"
@@ -218,7 +218,7 @@ resource "aws_lb_listener" "vault_443" {
 }
 
 resource "aws_lb_listener" "vault_8200" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   load_balancer_arn = "${aws_lb.vault.arn}"
   port              = "8200"
