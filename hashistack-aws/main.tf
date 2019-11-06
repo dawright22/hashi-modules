@@ -3,7 +3,7 @@ terraform {
 }
 
 module "consul_auto_join_instance_role" {
-  source = "github.com/hashicorp-modules/consul-auto-join-instance-role-aws"
+  source = "github.com/dawright22/hashicorp-modules/consul-auto-join-instance-role-aws"
 
   create = "${var.create ? 1 : 0}"
   name   = "${var.name}"
