@@ -3,7 +3,7 @@ terraform {
 }
 
 module "consul_auto_join_instance_role" {
-  source = "github.com/hashicorp-modules/consul-auto-join-instance-role-aws"
+  source = "github.com/dawright22/hashicorp-modules/consul-auto-join-instance-role-aws"
 
   create = var.create ? 1 : 0
   name   = var.name
@@ -37,7 +37,7 @@ data "template_file" "hashistack_init" {
 }
 
 module "consul_server_sg" {
-  source = "github.com/hashicorp-modules/consul-server-ports-aws"
+  source = "github.com/dawright22/hashicorp-modules/consul-server-ports-aws"
 
   create      = var.create ? 1 : 0
   name        = "${var.name}-consul-server"
@@ -46,7 +46,7 @@ module "consul_server_sg" {
 }
 
 module "vault_server_sg" {
-  source = "github.com/hashicorp-modules/vault-server-ports-aws"
+  source = "github.com/dawright22/hashicorp-modules/vault-server-ports-aws"
 
   create      = var.create ? 1 : 0
   name        = "${var.name}-vault-server"
@@ -55,7 +55,7 @@ module "vault_server_sg" {
 }
 
 module "nomad_server_sg" {
-  source = "github.com/hashicorp-modules/nomad-server-ports-aws"
+  source = "github.com/dawright22/hashicorp-modules/nomad-server-ports-aws"
 
   create      = var.create ? 1 : 0
   name        = "${var.name}-nomad-server"
@@ -98,7 +98,7 @@ resource "aws_launch_configuration" "hashistack" {
 }
 
 module "consul_lb_aws" {
-  source = "github.com/hashicorp-modules/consul-lb-aws"
+  source = "github.com/dawright22/hashicorp-modules/consul-lb-aws"
 
   create             = var.create
   name               = var.name
@@ -119,7 +119,7 @@ module "consul_lb_aws" {
 }
 
 module "vault_lb_aws" {
-  source = "github.com/hashicorp-modules/vault-lb-aws"
+  source = "github.com/dawright22/hashicorp-modules/vault-lb-aws"
 
   create             = var.create
   name               = var.name
@@ -140,7 +140,7 @@ module "vault_lb_aws" {
 }
 
 module "nomad_lb_aws" {
-  source = "github.com/hashicorp-modules/nomad-lb-aws"
+  source = "github.com/dawright22/hashicorp-modules/nomad-lb-aws"
 
   create             = var.create
   name               = var.name
