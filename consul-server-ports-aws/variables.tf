@@ -14,11 +14,12 @@ variable "vpc_id" {
 
 variable "cidr_blocks" {
   description = "CIDR blocks for Security Groups."
-  type        = "list"
+  type        = list(string)
 }
 
 variable "tags" {
   description = "Optional map of tags to set on resources, defaults to empty map."
-  type        = "map"
+  type        = map(string)
   default     = {}
 }
+

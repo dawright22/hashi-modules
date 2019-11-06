@@ -6,25 +6,24 @@ terraform {
 module "consul_client_ports_aws" {
   source = "github.com/hashicorp-modules/consul-client-ports-aws"
 
-  create      = "${var.create}"
-  name        = "${var.name}"
-  vpc_id      = "${var.vpc_id}"
-  cidr_blocks = "${var.cidr_blocks}"
-  tags        = "${var.tags}"
+  create      = var.create
+  name        = var.name
+  vpc_id      = var.vpc_id
+  cidr_blocks = var.cidr_blocks
+  tags        = var.tags
 }
 
 # Server RPC (Default 8300) - TCP. This is used by servers to handle incoming requests from other agents on TCP only.
 resource "aws_security_group_rule" "server_rpc_tcp" {
-  instance_count = "${var.create ? 1 : 0}"
+  count = var.create ? 1 : 0
 
-  security_group_id = "${module.consul_client_ports_aws.consul_client_sg_id}"
+  security_group_id = module.consul_client_ports_aws.consul_client_sg_id
   type              = "ingress"
   protocol          = "tcp"
   from_port         = 8300
   to_port           = 8300
-  cidr_blocks       = ["${var.cidr_blocks}"]
+  cidr_blocks       = var.cidr_blocks
 }
-
 
 # As of Consul 0.8, it is recommended to enable connection between servers through port 8302 for both
 # TCP and UDP on the LAN interface as well for the WAN Join Flooding feature. See also: Consul 0.8.0
@@ -34,24 +33,25 @@ resource "aws_security_group_rule" "server_rpc_tcp" {
 
 # Serf WAN (Default 8302) - TCP. This is used by servers to gossip over the WAN to other servers on TCP and UDP.
 resource "aws_security_group_rule" "serf_wan_tcp" {
-  instance_count = "${var.create ? 1 : 0}"
+  count = var.create ? 1 : 0
 
-  security_group_id = "${module.consul_client_ports_aws.consul_client_sg_id}"
+  security_group_id = module.consul_client_ports_aws.consul_client_sg_id
   type              = "ingress"
   protocol          = "tcp"
   from_port         = 8302
   to_port           = 8302
-  cidr_blocks       = ["${var.cidr_blocks}"]
+  cidr_blocks       = var.cidr_blocks
 }
 
 # Serf WAN (Default 8302) - UDP. This is used by servers to gossip over the WAN to other servers on TCP and UDP.
 resource "aws_security_group_rule" "serf_wan_udp" {
-  instance_count = "${var.create ? 1 : 0}"
+  count = var.create ? 1 : 0
 
-  security_group_id = "${module.consul_client_ports_aws.consul_client_sg_id}"
+  security_group_id = module.consul_client_ports_aws.consul_client_sg_id
   type              = "ingress"
   protocol          = "udp"
   from_port         = 8302
   to_port           = 8302
-  cidr_blocks       = ["${var.cidr_blocks}"]
+  cidr_blocks       = var.cidr_blocks
 }
+
