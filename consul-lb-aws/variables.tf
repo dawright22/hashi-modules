@@ -14,12 +14,12 @@ variable "vpc_id" {
 
 variable "cidr_blocks" {
   description = "CIDR blocks to provision LB across."
-  type        = "list"
+  type        = list(string)
 }
 
 variable "subnet_ids" {
   description = "Subnet ID(s) to provision LB across."
-  type        = "list"
+  type        = list(string)
 }
 
 variable "is_internal_lb" {
@@ -74,6 +74,7 @@ variable "lb_logs_enabled" {
 
 variable "tags" {
   description = "Optional map of tags to set on resources, defaults to empty map."
-  type        = "map"
+  type        = map(string)
   default     = {}
 }
+
