@@ -15,7 +15,7 @@ module "consul_client_ports_aws" {
 
 # Server RPC (Default 8300) - TCP. This is used by servers to handle incoming requests from other agents on TCP only.
 resource "aws_security_group_rule" "server_rpc_tcp" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   security_group_id = "${module.consul_client_ports_aws.consul_client_sg_id}"
   type              = "ingress"
@@ -34,7 +34,7 @@ resource "aws_security_group_rule" "server_rpc_tcp" {
 
 # Serf WAN (Default 8302) - TCP. This is used by servers to gossip over the WAN to other servers on TCP and UDP.
 resource "aws_security_group_rule" "serf_wan_tcp" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   security_group_id = "${module.consul_client_ports_aws.consul_client_sg_id}"
   type              = "ingress"
@@ -46,7 +46,7 @@ resource "aws_security_group_rule" "serf_wan_tcp" {
 
 # Serf WAN (Default 8302) - UDP. This is used by servers to gossip over the WAN to other servers on TCP and UDP.
 resource "aws_security_group_rule" "serf_wan_udp" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   security_group_id = "${module.consul_client_ports_aws.consul_client_sg_id}"
   type              = "ingress"
