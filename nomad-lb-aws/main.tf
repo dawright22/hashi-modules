@@ -3,7 +3,7 @@ terraform {
 }
 
 resource "aws_security_group" "nomad_lb" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   name_prefix = "${var.name}-nomad-lb-"
   description = "Security group for nomad ${var.name} LB"
@@ -12,7 +12,7 @@ resource "aws_security_group" "nomad_lb" {
 }
 
 resource "aws_security_group_rule" "nomad_lb_http_80" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   security_group_id = "${aws_security_group.nomad_lb.id}"
   type              = "ingress"
@@ -23,7 +23,7 @@ resource "aws_security_group_rule" "nomad_lb_http_80" {
 }
 
 resource "aws_security_group_rule" "nomad_lb_https_443" {
-  count = "${var.create && var.use_lb_cert ? 1 : 0}"
+  instance_count = "${var.create && var.use_lb_cert ? 1 : 0}"
 
   security_group_id = "${aws_security_group.nomad_lb.id}"
   type              = "ingress"
@@ -34,7 +34,7 @@ resource "aws_security_group_rule" "nomad_lb_https_443" {
 }
 
 resource "aws_security_group_rule" "nomad_lb_tcp_4646" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   security_group_id = "${aws_security_group.nomad_lb.id}"
   type              = "ingress"
@@ -45,7 +45,7 @@ resource "aws_security_group_rule" "nomad_lb_tcp_4646" {
 }
 
 resource "aws_security_group_rule" "outbound_tcp" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   security_group_id = "${aws_security_group.nomad_lb.id}"
   type              = "egress"
@@ -56,18 +56,18 @@ resource "aws_security_group_rule" "outbound_tcp" {
 }
 
 resource "random_id" "nomad_lb_access_logs" {
-  count = "${var.create && !var.lb_bucket_override ? 1 : 0}"
+  instance_count = "${var.create && !var.lb_bucket_override ? 1 : 0}"
 
   byte_length = 4
   prefix      = "${format("%s-nomad-lb-access-logs-", var.name)}"
 }
 
 data "aws_elb_service_account" "nomad_lb_access_logs" {
-  count = "${var.create && !var.lb_bucket_override ? 1 : 0}"
+  instance_count = "${var.create && !var.lb_bucket_override ? 1 : 0}"
 }
 
 resource "aws_s3_bucket" "nomad_lb_access_logs" {
-  count = "${var.create && !var.lb_bucket_override ? 1 : 0}"
+  instance_count = "${var.create && !var.lb_bucket_override ? 1 : 0}"
 
   bucket = "${random_id.nomad_lb_access_logs.hex}"
   acl    = "private"
@@ -99,14 +99,14 @@ POLICY
 }
 
 resource "random_id" "nomad_lb" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   byte_length = 4
   prefix      = "nomad-lb-"
 }
 
 resource "aws_lb" "nomad" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   name            = "${random_id.nomad_lb.hex}"
   internal        = "${var.is_internal_lb ? true : false}"
@@ -122,14 +122,14 @@ resource "aws_lb" "nomad" {
 }
 
 resource "random_id" "nomad_http_4646" {
-  count = "${var.create && !var.use_lb_cert ? 1 : 0}"
+  instance_count = "${var.create && !var.use_lb_cert ? 1 : 0}"
 
   byte_length = 4
   prefix      = "nomad-http-4646-"
 }
 
 resource "aws_lb_target_group" "nomad_http_4646" {
-  count = "${var.create && !var.use_lb_cert ? 1 : 0}"
+  instance_count = "${var.create && !var.use_lb_cert ? 1 : 0}"
 
   name     = "${random_id.nomad_http_4646.hex}"
   vpc_id   = "${var.vpc_id}"
@@ -151,7 +151,7 @@ resource "aws_lb_target_group" "nomad_http_4646" {
 }
 
 resource "aws_lb_listener" "nomad_80" {
-  count = "${var.create && !var.use_lb_cert ? 1 : 0}"
+  instance_count = "${var.create && !var.use_lb_cert ? 1 : 0}"
 
   load_balancer_arn = "${aws_lb.nomad.arn}"
   port              = "80"
@@ -164,7 +164,7 @@ resource "aws_lb_listener" "nomad_80" {
 }
 
 resource "aws_iam_server_certificate" "nomad" {
-  count = "${var.create && var.use_lb_cert ? 1 : 0}"
+  instance_count = "${var.create && var.use_lb_cert ? 1 : 0}"
 
   name              = "${random_id.nomad_lb.hex}"
   certificate_body  = "${var.lb_cert}"
@@ -174,14 +174,14 @@ resource "aws_iam_server_certificate" "nomad" {
 }
 
 resource "random_id" "nomad_https_4646" {
-  count = "${var.create && var.use_lb_cert ? 1 : 0}"
+  instance_count = "${var.create && var.use_lb_cert ? 1 : 0}"
 
   byte_length = 4
   prefix      = "nomad-https-4646-"
 }
 
 resource "aws_lb_target_group" "nomad_https_4646" {
-  count = "${var.create && var.use_lb_cert ? 1 : 0}"
+  instance_count = "${var.create && var.use_lb_cert ? 1 : 0}"
 
   name     = "${random_id.nomad_https_4646.hex}"
   vpc_id   = "${var.vpc_id}"
@@ -203,7 +203,7 @@ resource "aws_lb_target_group" "nomad_https_4646" {
 }
 
 resource "aws_lb_listener" "nomad_443" {
-  count = "${var.create && var.use_lb_cert ? 1 : 0}"
+  instance_count = "${var.create && var.use_lb_cert ? 1 : 0}"
 
   load_balancer_arn = "${aws_lb.nomad.arn}"
   port              = "443"
@@ -218,7 +218,7 @@ resource "aws_lb_listener" "nomad_443" {
 }
 
 resource "aws_lb_listener" "nomad_4646" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   load_balancer_arn = "${aws_lb.nomad.arn}"
   port              = "4646"
