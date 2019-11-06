@@ -1,4 +1,4 @@
-output "zREADME" { 
+#output "zREADME" { 
 #   value = <<README
 # # ------------------------------------------------------------------------------
 # # ${var.name} HashiStack Consul
@@ -219,69 +219,69 @@ output "zREADME" {
 #}
 
 output "hashistack_asg_id" {
-  value = "${element(concat(aws_autoscaling_group.hashistack.*.id, list("")), 0)}" # TODO: Workaround for issue #11210
+  value = element(concat(aws_autoscaling_group.hashistack.*.id, [""]), 0) # TODO: Workaround for issue #11210
 }
 
 output "consul_sg_id" {
-  value = "${module.consul_server_sg.consul_server_sg_id}"
+  value = module.consul_server_sg.consul_server_sg_id
 }
 
 output "consul_lb_sg_id" {
-  value = "${module.consul_lb_aws.consul_lb_sg_id}"
+  value = module.consul_lb_aws.consul_lb_sg_id
 }
 
 output "consul_tg_http_8500_arn" {
-  value = "${module.consul_lb_aws.consul_tg_http_8500_arn}"
+  value = module.consul_lb_aws.consul_tg_http_8500_arn
 }
 
 output "consul_tg_https_8080_arn" {
-  value = "${module.consul_lb_aws.consul_tg_https_8080_arn}"
+  value = module.consul_lb_aws.consul_tg_https_8080_arn
 }
 
 output "consul_lb_dns" {
-  value = "${module.consul_lb_aws.consul_lb_dns}"
+  value = module.consul_lb_aws.consul_lb_dns
 }
 
 output "vault_sg_id" {
-  value = "${module.vault_server_sg.vault_server_sg_id}"
+  value = module.vault_server_sg.vault_server_sg_id
 }
 
 output "vault_lb_sg_id" {
-  value = "${module.vault_lb_aws.vault_lb_sg_id}"
+  value = module.vault_lb_aws.vault_lb_sg_id
 }
 
 output "vault_tg_http_8200_arn" {
-  value = "${module.vault_lb_aws.vault_tg_http_8200_arn}"
+  value = module.vault_lb_aws.vault_tg_http_8200_arn
 }
 
 output "vault_tg_https_8200_arn" {
-  value = "${module.vault_lb_aws.vault_tg_https_8200_arn}"
+  value = module.vault_lb_aws.vault_tg_https_8200_arn
 }
 
 output "vault_lb_dns" {
-  value = "${module.vault_lb_aws.vault_lb_dns}"
+  value = module.vault_lb_aws.vault_lb_dns
 }
 
 output "nomad_sg_id" {
-  value = "${module.nomad_server_sg.nomad_server_sg_id}"
+  value = module.nomad_server_sg.nomad_server_sg_id
 }
 
 output "nomad_lb_sg_id" {
-  value = "${module.nomad_lb_aws.nomad_lb_sg_id}"
+  value = module.nomad_lb_aws.nomad_lb_sg_id
 }
 
 output "nomad_tg_http_4646_arn" {
-  value = "${module.nomad_lb_aws.nomad_tg_http_4646_arn}"
+  value = module.nomad_lb_aws.nomad_tg_http_4646_arn
 }
 
 output "nomad_tg_https_4646_arn" {
-  value = "${module.nomad_lb_aws.nomad_tg_https_4646_arn}"
+  value = module.nomad_lb_aws.nomad_tg_https_4646_arn
 }
 
 output "nomad_lb_dns" {
-  value = "${module.nomad_lb_aws.nomad_lb_dns}"
+  value = module.nomad_lb_aws.nomad_lb_dns
 }
 
 output "hashistack_username" {
-  value = "${lookup(var.users, var.os)}"
+  value = var.users[var.os]
 }
