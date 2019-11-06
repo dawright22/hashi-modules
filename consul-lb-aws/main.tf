@@ -3,7 +3,7 @@ terraform {
 }
 
 resource "aws_security_group" "consul_lb" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   name_prefix = "${var.name}-consul-lb-"
   description = "Security group for consul ${var.name} LB"
@@ -12,7 +12,7 @@ resource "aws_security_group" "consul_lb" {
 }
 
 resource "aws_security_group_rule" "consul_lb_http_80" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   security_group_id = "${aws_security_group.consul_lb.id}"
   type              = "ingress"
@@ -23,7 +23,7 @@ resource "aws_security_group_rule" "consul_lb_http_80" {
 }
 
 resource "aws_security_group_rule" "consul_lb_https_443" {
-  count = "${var.create && var.use_lb_cert ? 1 : 0}"
+  instance_count = "${var.create && var.use_lb_cert ? 1 : 0}"
 
   security_group_id = "${aws_security_group.consul_lb.id}"
   type              = "ingress"
@@ -34,7 +34,7 @@ resource "aws_security_group_rule" "consul_lb_https_443" {
 }
 
 resource "aws_security_group_rule" "consul_lb_tcp_8500" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   security_group_id = "${aws_security_group.consul_lb.id}"
   type              = "ingress"
@@ -45,7 +45,7 @@ resource "aws_security_group_rule" "consul_lb_tcp_8500" {
 }
 
 resource "aws_security_group_rule" "consul_lb_tcp_8080" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   security_group_id = "${aws_security_group.consul_lb.id}"
   type              = "ingress"
@@ -56,7 +56,7 @@ resource "aws_security_group_rule" "consul_lb_tcp_8080" {
 }
 
 resource "aws_security_group_rule" "outbound_tcp" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   security_group_id = "${aws_security_group.consul_lb.id}"
   type              = "egress"
@@ -67,18 +67,18 @@ resource "aws_security_group_rule" "outbound_tcp" {
 }
 
 resource "random_id" "consul_lb_access_logs" {
-  count = "${var.create && !var.lb_bucket_override ? 1 : 0}"
+  instance_count = "${var.create && !var.lb_bucket_override ? 1 : 0}"
 
   byte_length = 4
   prefix      = "${format("%s-consul-lb-access-logs-", var.name)}"
 }
 
 data "aws_elb_service_account" "consul_lb_access_logs" {
-  count = "${var.create && !var.lb_bucket_override ? 1 : 0}"
+  instance_count = "${var.create && !var.lb_bucket_override ? 1 : 0}"
 }
 
 resource "aws_s3_bucket" "consul_lb_access_logs" {
-  count = "${var.create && !var.lb_bucket_override ? 1 : 0}"
+  instance_count = "${var.create && !var.lb_bucket_override ? 1 : 0}"
 
   bucket = "${random_id.consul_lb_access_logs.hex}"
   acl    = "private"
@@ -110,14 +110,14 @@ POLICY
 }
 
 resource "random_id" "consul_lb" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   byte_length = 4
   prefix      = "consul-lb-"
 }
 
 resource "aws_lb" "consul" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   name            = "${random_id.consul_lb.hex}"
   internal        = "${var.is_internal_lb ? true : false}"
@@ -133,14 +133,14 @@ resource "aws_lb" "consul" {
 }
 
 resource "random_id" "consul_http_8500" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   byte_length = 4
   prefix      = "consul-http-8500-"
 }
 
 resource "aws_lb_target_group" "consul_http_8500" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   name     = "${random_id.consul_http_8500.hex}"
   vpc_id   = "${var.vpc_id}"
@@ -162,7 +162,7 @@ resource "aws_lb_target_group" "consul_http_8500" {
 }
 
 resource "aws_lb_listener" "consul_80" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   load_balancer_arn = "${aws_lb.consul.arn}"
   port              = "80"
@@ -175,7 +175,7 @@ resource "aws_lb_listener" "consul_80" {
 }
 
 resource "aws_lb_listener" "consul_8500" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   load_balancer_arn = "${aws_lb.consul.arn}"
   port              = "8500"
@@ -188,7 +188,7 @@ resource "aws_lb_listener" "consul_8500" {
 }
 
 resource "aws_iam_server_certificate" "consul" {
-  count = "${var.create && var.use_lb_cert ? 1 : 0}"
+  instance_count = "${var.create && var.use_lb_cert ? 1 : 0}"
 
   name              = "${random_id.consul_lb.hex}"
   certificate_body  = "${var.lb_cert}"
@@ -198,14 +198,14 @@ resource "aws_iam_server_certificate" "consul" {
 }
 
 resource "random_id" "consul_https_8080" {
-  count = "${var.create && var.use_lb_cert ? 1 : 0}"
+  instance_count = "${var.create && var.use_lb_cert ? 1 : 0}"
 
   byte_length = 4
   prefix      = "consul-https-8080-"
 }
 
 resource "aws_lb_target_group" "consul_https_8080" {
-  count = "${var.create && var.use_lb_cert ? 1 : 0}"
+  instance_count = "${var.create && var.use_lb_cert ? 1 : 0}"
 
   name     = "${random_id.consul_https_8080.hex}"
   vpc_id   = "${var.vpc_id}"
@@ -227,7 +227,7 @@ resource "aws_lb_target_group" "consul_https_8080" {
 }
 
 resource "aws_lb_listener" "consul_443" {
-  count = "${var.create && var.use_lb_cert ? 1 : 0}"
+  instance_count = "${var.create && var.use_lb_cert ? 1 : 0}"
 
   load_balancer_arn = "${aws_lb.consul.arn}"
   port              = "443"
@@ -242,7 +242,7 @@ resource "aws_lb_listener" "consul_443" {
 }
 
 resource "aws_lb_listener" "consul_8080" {
-  count = "${var.create && var.use_lb_cert ? 1 : 0}"
+  instance_count = "${var.create && var.use_lb_cert ? 1 : 0}"
 
   load_balancer_arn = "${aws_lb.consul.arn}"
   port              = "8080"
