@@ -17,7 +17,7 @@ module "nomad_client_ports_aws" {
 # UDP should be routable between the server nodes on this port
 # https://www.nomadproject.io/docs/agent/configuration/index.html#serf-2
 resource "aws_security_group_rule" "serf_tcp" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   security_group_id = "${module.nomad_client_ports_aws.nomad_client_sg_id}"
   type              = "ingress"
@@ -31,7 +31,7 @@ resource "aws_security_group_rule" "serf_tcp" {
 # UDP should be routable between the server nodes on this port
 # https://www.nomadproject.io/docs/agent/configuration/index.html#serf-2
 resource "aws_security_group_rule" "serf_udp" {
-  count = "${var.create ? 1 : 0}"
+  instance_count = "${var.create ? 1 : 0}"
 
   security_group_id = "${module.nomad_client_ports_aws.nomad_client_sg_id}"
   type              = "ingress"
