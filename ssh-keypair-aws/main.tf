@@ -3,7 +3,7 @@ terraform {
 }
 
 module "tls_private_key" {
-  source = "github.com/dawright22/hashicorp-modules/tree/master/tls-private-key"
+  source = "github.com/dawright22/hashicorp-modules/tls-private-key"
 
   create    = "${var.create}"
   name      = "${var.name}"
