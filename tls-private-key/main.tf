@@ -14,7 +14,7 @@ resource "tls_private_key" "key" {
 }
 
 resource "null_resource" "download_private_key" {
-  provisioner "local-exec" 
+  provisioner "local-exec" {
     command = "echo '${tls_private_key.key.private_key_pem}' > ${format("%s.key.pem", random_id.name.hex)} && chmod ${var.permissions} ${format("%s.key.pem", random_id.name.hex)}"
   }
 }
