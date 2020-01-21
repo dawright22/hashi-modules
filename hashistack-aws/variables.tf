@@ -58,7 +58,7 @@ variable "subnet_ids" {
 
 variable "public" {
   description = "Open up nodes to the public internet for easy access - DO NOT DO THIS IN PROD, defaults to false."
-  default     = false
+  default     = true
 }
 
 variable "instance_count" {
