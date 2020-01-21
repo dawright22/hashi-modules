@@ -20,17 +20,17 @@ variable "release_version" {
 
 variable "consul_version" {
   description = "Consul version tag (e.g. 1.2.3 or 1.2.3-ent), defaults to \"1.2.3\"."
-  default     = "1.2.3"
+  default     = "1.6.2"
 }
 
 variable "vault_version" {
   description = "Vault version tag (e.g. 0.11.3 or 0.11.3-ent), defaults to \"0.11.3\"."
-  default     = "0.11.3"
+  default     = "1.3.1"
 }
 
 variable "nomad_version" {
   description = "Nomad version tag (e.g. 0.8.6 or 0.8.6-ent), defaults to \"0.8.6\"."
-  default     = "0.8.6"
+  default     = "0.10.2"
 }
 
 variable "os" {
