@@ -10,7 +10,7 @@ resource "random_id" "name" {
 resource "tls_private_key" "key" {
   algorithm   = var.algorithm
   rsa_bits    = var.rsa_bits
-  ecdsa_curve = "${var.ecdsa_curve}"
+  ecdsa_curve = var.ecdsa_curve
 }
 
 resource "null_resource" "download_private_key" {
